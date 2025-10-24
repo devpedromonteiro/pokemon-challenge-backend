@@ -3,6 +3,16 @@ import { CustomError } from "../../domain/custom-error";
 import { env } from "../config/env";
 import { getErrorMessage } from "../utils/get-error-message";
 
+/**
+ * Handle errors in the request pipeline.
+ * 
+ * @param error - The error to handle.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next function.
+ * 
+ * @returns void
+ */
 export const errorHandler = (
     error: unknown,
     req: Request,
