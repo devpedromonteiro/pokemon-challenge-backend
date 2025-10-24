@@ -1,22 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../../domain/custom-error";
 import { env } from "../config/env";
-
-export const getErrorMessage = (error: unknown): string => {
-    if (error instanceof Error) {
-        return error.message;
-    }
-
-    if (error && typeof error === "object" && "message" in error) {
-        return String(error.message);
-    }
-
-    if (typeof error === "string") {
-        return error;
-    }
-
-    return "An error occurred";
-};
+import { getErrorMessage } from "../utils/get-error-message";
 
 export const errorHandler = (
     error: unknown,
