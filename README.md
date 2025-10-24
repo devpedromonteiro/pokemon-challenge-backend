@@ -5,9 +5,9 @@ API REST desenvolvida com Node.js 22 LTS, TypeScript e Express.
 ## Tecnologias
 
 - **Node.js**: 22 LTS
-- **TypeScript**: ^5.7
-- **Express**: ^4.21
-- **Helmet**: ^8.0 (segurança)
+- **TypeScript**: 5.9.3
+- **Express**: 5.1.0
+- **Helmet**: 8.1.0 (segurança)
 
 ## Requisitos
 
