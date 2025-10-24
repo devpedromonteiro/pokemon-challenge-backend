@@ -1,0 +1,21 @@
+services:
+  api:
+    build:
+      context: .
+      target: dev
+    image: pokemon-api:dev
+    container_name: pokemon-api
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+# Para produção, podemos usar o target 'prod' depois (fora deste escopo)
+
