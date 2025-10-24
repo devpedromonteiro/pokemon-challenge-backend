@@ -5,6 +5,8 @@
     "engines": {
         "node": ">=22 <23"
     },
+    "author": "João Pedro",
+    "license": "ISC",
     "scripts": {
         "dev": "tsx watch src/main/server.ts",
         "build": "tsc",
