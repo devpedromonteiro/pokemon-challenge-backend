@@ -47,6 +47,20 @@ npm run lint
 ```
 Executa o ESLint em todos os arquivos TypeScript.
 
+### Testes
+
+# Executar todos os testes
+npm test
+
+# Executar testes em modo watch
+npm run test:watch
+
+# Executar testes com cobertura
+npm run test:cov
+
+# Executar testes no CI
+npm run test:ci
+
 ## Docker
 
 ### Desenvolvimento
