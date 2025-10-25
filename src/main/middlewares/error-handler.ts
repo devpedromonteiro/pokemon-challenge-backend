@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../../domain/custom-error";
-import { env } from "../config/env";
-import { getErrorMessage } from "../utils/get-error-message";
+import { CustomError } from "@/domain/custom-error";
+import { env } from "@/main/config/env";
+import { getErrorMessage } from "@/main/utils/get-error-message";
 
 /**
  * Handle errors in the request pipeline.

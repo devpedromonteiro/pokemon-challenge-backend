@@ -1,4 +1,4 @@
-import { getErrorMessage } from "../../../src/main/utils/get-error-message";
+import { getErrorMessage } from "@/main/utils/get-error-message";
 
 type SutTypes = {
     sut: (error: unknown) => string;
