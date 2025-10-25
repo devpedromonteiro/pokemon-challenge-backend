@@ -52,7 +52,7 @@ npm run lint
 # Formatar código automaticamente
 npm run format
 
-# Verificar e aplicar correções (usado pelo lint-staged)
+# Verificar e aplicar correções nos arquivos (usado pelo lint-staged)
 npm run lint:staged
 ```
 
