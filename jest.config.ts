@@ -15,6 +15,7 @@ const config: Config = {
     },
     moduleFileExtensions: ["ts", "tsx", "js", "json"],
     moduleNameMapper: {
+        "^@/tests/(.*)$": "<rootDir>/tests/$1",
         "^@/(.*)$": "<rootDir>/src/$1",
     },
     collectCoverage: true,

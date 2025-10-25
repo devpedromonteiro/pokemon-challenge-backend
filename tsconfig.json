@@ -2,7 +2,8 @@
     "compilerOptions": {
         "target": "ES2022",
         "module": "CommonJS",
-        "rootDir": ".",
+        "moduleResolution": "node",
+        "rootDirs": ["src", "tests"],
         "outDir": "dist",
         "strict": true,
         "noImplicitAny": true,
@@ -10,10 +11,11 @@
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "baseUrl": ".",
+        "baseUrl": "src",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["*"],
+            "@/tests/*": ["../tests/*"]
         }
     },
-    "include": ["src"]
+    "include": ["src", "tests"]
 }

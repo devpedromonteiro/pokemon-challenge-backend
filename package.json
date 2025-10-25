@@ -9,7 +9,7 @@
     "license": "ISC",
     "scripts": {
         "dev": "tsx watch src/main/server.ts",
-        "build": "tsc",
+        "build": "tsc --project tsconfig.build.json && tsc-alias",
         "start": "node dist/main/server.js",
         "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings=0",
         "test": "cross-env NODE_ENV=test jest --runInBand",
@@ -33,6 +33,7 @@
         "jest-junit": "16.0.0",
         "ts-jest": "29.4.5",
         "ts-node": "10.9.2",
+        "tsc-alias": "^1.8.16",
         "tsx": "4.20.6",
         "typescript": "5.9.3"
     },
