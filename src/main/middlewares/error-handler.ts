@@ -1,24 +1,19 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { CustomError } from "@/domain/custom-error";
 import { env } from "@/main/config/env";
 import { getErrorMessage } from "@/main/utils/get-error-message";
 
 /**
  * Handle errors in the request pipeline.
- * 
+ *
  * @param error - The error to handle.
  * @param req - The request object.
  * @param res - The response object.
  * @param next - The next function.
- * 
+ *
  * @returns void
  */
-export const errorHandler = (
-    error: unknown,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const errorHandler = (error: unknown, _req: Request, res: Response, next: NextFunction) => {
     if (res.headersSent || env.debug) {
         next(error);
         return;
@@ -37,8 +32,7 @@ export const errorHandler = (
     res.status(500).json({
         error: {
             message:
-                getErrorMessage(error) ||
-                "An error occurred. Please view logs for more details",
+                getErrorMessage(error) || "An error occurred. Please view logs for more details",
         },
     });
 };

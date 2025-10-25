@@ -24,4 +24,4 @@ export const getErrorMessage = (error: unknown): string => {
     } catch {
         return "Unknown error";
     }
-}
+};

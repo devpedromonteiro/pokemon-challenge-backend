@@ -68,7 +68,9 @@ describe("getErrorMessage", () => {
             null,
             undefined,
             Symbol("x"),
-            () => {},
+            () => {
+                /* empty function for testing */
+            },
             BigInt(10),
         ];
 
