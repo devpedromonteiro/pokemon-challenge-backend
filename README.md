@@ -157,6 +157,32 @@ Cria um novo pokémon.
 }
 ```
 
+#### PUT /pokemons/:id
+
+Altera o treinador de um pokémon existente. **Apenas a propriedade `treinador` pode ser alterada.**
+
+**Request:**
+```json
+{
+  "treinador": "Thiago"
+}
+```
+
+**Response (204 No Content):**
+Sem corpo na resposta. Status 204 indica sucesso.
+
+**Regras de Validação:**
+- `id` é obrigatório na URL e deve ser um número válido
+- `treinador` é obrigatório e não pode ser string vazia
+- Apenas o campo `treinador` é permitido. Outros campos (como `tipo`, `nivel`) não podem ser alterados por este endpoint
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "The field treinador is required"
+}
+```
+
 ## Estrutura do Projeto
 
 ```
