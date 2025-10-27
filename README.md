@@ -13,9 +13,14 @@ API REST desenvolvida com Node.js 22 LTS, TypeScript e Express.
 
 ## Requisitos
 
-- Node.js 22 LTS
-- npm ou yarn
-- Docker e Docker Compose (opcional)
+- **Node.js** 22 LTS
+- **npm** ou **yarn**
+- **Docker** e **Docker Compose** (opcional)
+- **Docker Engine:** 27.3.1 ou superior  
+- **Docker Compose:** v2.29.1 ou superior
+
+> 💡 Testado com Docker Engine `27.3.1` e Compose plugin `v2.29.1` no Ubuntu 22.04 LTS.
+
 
 ## Instalação
 
@@ -80,6 +85,12 @@ docker compose up --build
 ```
 
 O servidor estará disponível em `http://localhost:3000`.
+
+* Build sem cache
+
+```bash
+docker compose build --no-cache
+```
 
 ### Produção (Docker)
 Para executar em modo produção, altere o `target` no `docker-compose.yml` de `dev` para `prod`.
