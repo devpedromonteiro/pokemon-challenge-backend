@@ -58,6 +58,26 @@ npm start
 
 ## 📚 Basic Usage
 
+### Using Repositories
+
+```typescript
+import { makePgPokemonRepository } from '@/main/factories/infra/repos/postgres';
+
+// In your use case or controller
+const repository = makePgPokemonRepository();
+
+// Load a Pokemon
+const pokemon = await repository.load({ id: 1 });
+
+// Save a Pokemon
+const saved = await repository.save({
+  id: 1,
+  name: "Bulbasaur",
+  type: "Grass",
+  sprite: "https://example.com/bulbasaur.png"
+});
+```
+
 ### Using Transactions
 
 ```typescript
@@ -80,6 +100,30 @@ try {
 } finally {
   await connection.closeTransaction();
 }
+```
+
+### Using Transaction Decorator
+
+```typescript
+import { DbTransactionController } from '@/application/decorators';
+import { makePgConnection } from '@/main/factories/infra/repos/postgres';
+
+// Assuming you have a controller
+class SavePokemonController {
+  async handle(request: any) {
+    // Your logic here
+  }
+}
+
+// Wrap it with transaction support
+const controller = new SavePokemonController();
+const transactionalController = new DbTransactionController(
+  controller,
+  makePgConnection()
+);
+
+// All operations will run in a transaction
+await transactionalController.handle(request);
 ```
 
 ## 🧪 Testing
@@ -113,6 +157,36 @@ npm run test:cov
 | `npm run db:studio` | Open Drizzle Studio (GUI) |
 | `npm run lint` | Run Biome linter |
 | `npm run format` | Format code with Biome |
+
+## 📁 Project Structure
+
+```
+src/
+├── domain/
+│   └── contracts/repos/          # Repository interfaces (domain contracts)
+│       ├── load-pokemon.ts
+│       └── save-pokemon.ts
+├── application/
+│   ├── contracts/
+│   │   └── db-transaction.ts     # Transaction interface
+│   └── decorators/
+│       └── db-transaction-controller.ts
+├── infra/
+│   └── repos/postgres/            # PostgreSQL implementation
+│       ├── helpers/
+│       │   ├── connection.ts     # Singleton connection manager
+│       │   └── errors.ts
+│       ├── schemas/
+│       │   └── pokemon.ts        # Drizzle schemas
+│       ├── pokemon-repository.ts # Repository implementation
+│       └── repository.ts         # Base repository class
+└── main/
+    ├── config/
+    │   └── env.ts                # Environment configuration
+    ├── factories/
+    │   └── infra/repos/postgres/ # Repository factories
+    └── server.ts                 # Server initialization
+```
 
 ## 🎯 Key Features
 

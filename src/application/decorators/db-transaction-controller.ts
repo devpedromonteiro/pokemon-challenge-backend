@@ -10,6 +10,10 @@ export class DbTransactionController extends Controller {
         super();
     }
 
+    override buildValidators(httpRequest: any): import("@/application/validation").Validator[] {
+        return this.decoratee.buildValidators(httpRequest);
+    }
+
     async perform(httpRequest: any): Promise<HttpResponse> {
         await this.db.openTransaction();
         try {

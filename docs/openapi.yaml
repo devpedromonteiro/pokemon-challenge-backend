@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: API Pokémon Battle Challenge
+  version: 1.0.0
+  description: >
+    Desafio técnico Pokémon. CRUD de pokémons, batalha e healthcheck.
+servers:
+  - url: http://localhost:3000
+    description: Dev server
+paths:
+  /healthz:
+    get:
+      summary: Health check da API
+      description: Retorna status de saúde da aplicação.
+      tags:
+        - Healthz
+      responses:
+        "200":
+          description: Serviço saudável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  uptimeSeconds:
+                    type: number
+                    example: 42.15
+                  version:
+                    type: string
+                    example: 1.0.0
+  /pokemons:
+    post:
+      summary: Criar pokémon
+      description: Cria um novo pokémon com nivel inicial 1
+      tags:
+        - Pokemons
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePokemonInput"
+      responses:
+        "201":
+          description: Pokémon criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+        "400":
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "tipo must be one of: \"pikachu\", \"charizard\", \"mewtwo\""
+#    get:
+#      summary: Listar pokémons
+#      responses:
+#        "200":
+#          description: Lista de pokémons
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: "#/components/schemas/Pokemon"
+#
+#    post:
+#      summary: Criar pokémon
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: "#/components/schemas/CreatePokemonInput"
+#      responses:
+#        "201":
+#          description: Pokémon criado
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/Pokemon"
+#
+#  /pokemons/{id}:
+#    get:
+#      summary: Carregar um pokémon específico
+#      parameters:
+#        - in: path
+#          name: id
+#          required: true
+#          schema: { type: integer }
+#      responses:
+#        "200":
+#          description: Dados do pokémon
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/Pokemon"
+#
+#    put:
+#      summary: Alterar treinador de um pokémon
+#      parameters:
+#        - in: path
+#          name: id
+#          required: true
+#          schema: { type: integer }
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: "#/components/schemas/UpdatePokemonInput"
+#      responses:
+#        "204":
+#          description: Atualizado com sucesso (sem corpo)
+#
+#    delete:
+#      summary: Deletar pokémon
+#      parameters:
+#        - in: path
+#          name: id
+#          required: true
+#          schema: { type: integer }
+#      responses:
+#        "204":
+#          description: Deletado com sucesso (sem corpo)
+#
+#  /batalhar/{pokemonAId}/{pokemonBId}:
+#    post:
+#      summary: Batalhar dois pokémons
+#      description: >
+#        O vencedor ganha +1 nível, o perdedor perde -1.
+#        Se chegar a 0, é removido do banco.
+#      parameters:
+#        - in: path
+#          name: pokemonAId
+#          required: true
+#          schema: { type: integer }
+#        - in: path
+#          name: pokemonBId
+#          required: true
+#          schema: { type: integer }
+#      responses:
+#        "200":
+#          description: Resultado da batalha
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/BattleResult"
+#
+components:
+  schemas:
+    Pokemon:
+      type: object
+      required: [id, tipo, treinador, nivel]
+      properties:
+        id:
+          type: integer
+          example: 1
+        tipo:
+          type: string
+          enum: [pikachu, charizard, mewtwo]
+        treinador:
+          type: string
+          example: Thiago
+        nivel:
+          type: integer
+          example: 1
+
+    CreatePokemonInput:
+      type: object
+      required: [tipo, treinador]
+      properties:
+        tipo:
+          type: string
+          enum: [pikachu, charizard, mewtwo]
+          description: Tipo do pokémon (apenas valores permitidos)
+        treinador:
+          type: string
+          description: Nome do treinador (não pode ser vazio)
+      example:
+        tipo: pikachu
+        treinador: Ash
+
+#    UpdatePokemonInput:
+#      type: object
+#      required: [treinador]
+#      properties:
+#        treinador:
+#          type: string
+#
+#    BattleResult:
+#      type: object
+#      required: [vencedor, perdedor]
+#      properties:
+#        vencedor:
+#          $ref: "#/components/schemas/Pokemon"
+#        perdedor:
+#          $ref: "#/components/schemas/Pokemon"
+

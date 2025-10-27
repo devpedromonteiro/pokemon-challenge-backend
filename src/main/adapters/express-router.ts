@@ -9,7 +9,7 @@ export const adaptExpressRoute: Adapter = (controller) => async (req, res) => {
         ...req.locals,
     });
 
-    const json = [200, 204].includes(statusCode) ? data : { error: data.message };
+    const json = [200, 201, 204].includes(statusCode) ? data : { error: data.message };
 
     res.status(statusCode).json(json);
 };
