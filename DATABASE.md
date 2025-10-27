@@ -1,5 +1,20 @@
 # Database Layer Documentation
 
+## Workflow
+
+Fluxo básico para gerenciar o banco de dados com **Drizzle ORM**:
+
+```bash
+# Criar nova migração
+npm run db:generate -- --name=<migration-name>
+
+# Aplicar migrações no banco local
+npm run db:migrate
+
+# Inspecionar resultado no Drizzle Studio
+npm run db:studio
+
+
 ## Overview
 
 This project uses **Drizzle ORM** with **PostgreSQL** following **Clean Architecture** principles.
