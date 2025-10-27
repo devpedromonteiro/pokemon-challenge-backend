@@ -12,6 +12,8 @@ paths:
     get:
       summary: Health check da API
       description: Retorna status de saúde da aplicação.
+      tags:
+        - Healthz
       responses:
         "200":
           description: Serviço saudável
@@ -33,6 +35,8 @@ paths:
     post:
       summary: Criar pokémon
       description: Cria um novo pokémon com nivel inicial 1
+      tags:
+        - Pokemons
       requestBody:
         required: true
         content:
