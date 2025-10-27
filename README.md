@@ -111,6 +111,52 @@ Resposta esperada:
 }
 ```
 
+## Documentação da API
+
+Após subir o projeto localmente:
+
+- Acesse `http://localhost:3000/healthz` para verificar saúde.
+- Acesse `http://localhost:3000/docs` para visualizar e testar a documentação interativa (Swagger UI gerado a partir de OpenAPI 3.1).
+
+O arquivo `docs/openapi.yaml` é o contrato da API. Ele descreve endpoints, payloads e respostas.
+
+### Endpoints Disponíveis
+
+#### POST /pokemons
+
+Cria um novo pokémon.
+
+**Request:**
+```json
+{
+  "tipo": "pikachu",
+  "treinador": "Ash"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "tipo": "pikachu",
+  "treinador": "Ash",
+  "nivel": 1
+}
+```
+
+**Regras de Validação:**
+- `tipo` é obrigatório e deve ser um dos valores: `"pikachu"`, `"charizard"`, ou `"mewtwo"`
+- `treinador` é obrigatório e não pode ser string vazia
+- `nivel` sempre inicia em 1 automaticamente e **não deve ser enviado** pelo cliente
+- Se `nivel` for enviado no request, a API retornará erro 400
+
+**Response (400 Bad Request):**
+```json
+{
+  "error": "tipo must be one of: \"pikachu\", \"charizard\", \"mewtwo\""
+}
+```
+
 ## Estrutura do Projeto
 
 ```
