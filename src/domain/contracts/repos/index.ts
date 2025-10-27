@@ -1,2 +1,1 @@
-export * from "./helpers/connection";
 export * from "./pokemon-repository";
