@@ -29,7 +29,33 @@ paths:
                   version:
                     type: string
                     example: 1.0.0
-#  /pokemons:
+  /pokemons:
+    post:
+      summary: Criar pokémon
+      description: Cria um novo pokémon com nivel inicial 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePokemonInput"
+      responses:
+        "201":
+          description: Pokémon criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+        "400":
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "tipo must be one of: \"pikachu\", \"charizard\", \"mewtwo\""
 #    get:
 #      summary: Listar pokémons
 #      responses:
@@ -125,35 +151,40 @@ paths:
 #              schema:
 #                $ref: "#/components/schemas/BattleResult"
 #
-#components:
-#  schemas:
-#    Pokemon:
-#      type: object
-#      required: [id, tipo, treinador, nivel]
-#      properties:
-#        id:
-#          type: integer
-#          example: 1
-#        tipo:
-#          type: string
-#          enum: [pikachu, charizard, mewtwo]
-#        treinador:
-#          type: string
-#          example: Thiago
-#        nivel:
-#          type: integer
-#          example: 1
-#
-#    CreatePokemonInput:
-#      type: object
-#      required: [tipo, treinador]
-#      properties:
-#        tipo:
-#          type: string
-#          enum: [pikachu, charizard, mewtwo]
-#        treinador:
-#          type: string
-#
+components:
+  schemas:
+    Pokemon:
+      type: object
+      required: [id, tipo, treinador, nivel]
+      properties:
+        id:
+          type: integer
+          example: 1
+        tipo:
+          type: string
+          enum: [pikachu, charizard, mewtwo]
+        treinador:
+          type: string
+          example: Thiago
+        nivel:
+          type: integer
+          example: 1
+
+    CreatePokemonInput:
+      type: object
+      required: [tipo, treinador]
+      properties:
+        tipo:
+          type: string
+          enum: [pikachu, charizard, mewtwo]
+          description: Tipo do pokémon (apenas valores permitidos)
+        treinador:
+          type: string
+          description: Nome do treinador (não pode ser vazio)
+      example:
+        tipo: pikachu
+        treinador: Ash
+
 #    UpdatePokemonInput:
 #      type: object
 #      required: [treinador]
