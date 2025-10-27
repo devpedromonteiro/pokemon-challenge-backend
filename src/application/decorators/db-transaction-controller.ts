@@ -1,42 +1,23 @@
-import type { DbTransaction } from "../contracts";
-import type { Controller } from "../controller";
+import type { DbTransaction } from "@/application/contracts";
+import { Controller } from "@/application/controllers";
+import type { HttpResponse } from "@/application/helpers";
 
-/**
- * Decorator that wraps a controller to execute within a database transaction
- * Automatically commits on success or rolls back on error
- */
-export class DbTransactionController implements Controller {
-    /**
-     * Creates a new DbTransactionController
-     *
-     * @param decoratee - The controller to be decorated
-     * @param db - The database transaction manager
-     */
+export class DbTransactionController extends Controller {
     constructor(
         private readonly decoratee: Controller,
         private readonly db: DbTransaction,
-    ) {}
+    ) {
+        super();
+    }
 
-    /**
-     * Handles the request within a database transaction
-     *
-     * Commits the transaction on success, rolls back on error
-     *
-     * @param request - The request object to pass to the decorated controller
-     * @returns Promise that resolves to the controller's response
-     * @throws Will throw the original error after rolling back the transaction
-     */
-    async perform(request: any): Promise<any> {
+    async perform(httpRequest: any): Promise<HttpResponse> {
         await this.db.openTransaction();
         try {
-            const response = await this.decoratee.perform(request);
-
+            const httpResponse = await this.decoratee.perform(httpRequest);
             await this.db.commit();
-
-            return response;
+            return httpResponse;
         } catch (error) {
             await this.db.rollback();
-
             throw error;
         } finally {
             await this.db.closeTransaction();
