@@ -22,6 +22,17 @@ describe("DbTransactionController", () => {
         expect(sut).toBeInstanceOf(Controller);
     });
 
+    it("should delegate buildValidators to decoratee", () => {
+        const httpRequest = { any: "any" };
+        decoratee.buildValidators.mockReturnValue([]);
+
+        const validators = sut.buildValidators(httpRequest);
+
+        expect(decoratee.buildValidators).toHaveBeenCalledWith(httpRequest);
+        expect(decoratee.buildValidators).toHaveBeenCalledTimes(1);
+        expect(validators).toEqual([]);
+    });
+
     it("should open transaction", async () => {
         await sut.perform({ any: "any" });
 
