@@ -2,6 +2,10 @@ import type { Config } from "drizzle-kit";
 
 /**
  * Drizzle Kit configuration for migrations and schema management
+ *
+ * SSL Configuration:
+ * - Development (local/Docker): SSL disabled (postgres doesn't have SSL configured)
+ * - Production (Heroku/AWS/etc): SSL enabled automatically via DATABASE_URL
  */
 export default {
     schema: "./src/infra/repos/postgres/schemas/index.ts",
@@ -13,5 +17,6 @@ export default {
         user: process.env.DB_USER || "postgres",
         password: process.env.DB_PASSWORD || "postgres",
         database: process.env.DB_NAME || "pokemon_db",
+        ssl: process.env.NODE_ENV === "production" ? true : false,
     },
 } satisfies Config;
