@@ -156,6 +156,43 @@ paths:
                   error:
                     type: string
                     example: "The field treinador is required"
+
+    delete:
+      summary: Deletar um pokémon
+      description: Remove um pokémon do banco de dados
+      tags:
+        - Pokemons
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do pokémon
+      responses:
+        "204":
+          description: Pokémon deletado com sucesso (sem corpo)
+        "400":
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id must be a valid number"
+        "404":
+          description: Pokémon não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pokemon not found"
+
 #    get:
 #      summary: Carregar um pokémon específico
 #      tags:

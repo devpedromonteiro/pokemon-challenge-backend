@@ -2,6 +2,7 @@ import type { Router } from "express";
 import { adaptExpressRoute } from "@/main/adapters";
 import {
     makeCreatePokemonController,
+    makeDeletePokemonController,
     makeListPokemonsController,
     makeLoadPokemonByIdController,
     makeUpdatePokemonTreinadorController,
@@ -12,4 +13,5 @@ export default (router: Router): void => {
     router.get("/pokemons", adaptExpressRoute(makeListPokemonsController()));
     router.get("/pokemons/:id", adaptExpressRoute(makeLoadPokemonByIdController()));
     router.put("/pokemons/:id", adaptExpressRoute(makeUpdatePokemonTreinadorController()));
+    router.delete("/pokemons/:id", adaptExpressRoute(makeDeletePokemonController()));
 };
