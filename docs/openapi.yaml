@@ -60,20 +60,30 @@ paths:
                   error:
                     type: string
                     example: "tipo must be one of: \"pikachu\", \"charizard\", \"mewtwo\""
-#    get:
-#      summary: Listar pokémons
-#      tags:
-#        - Pokemons
-#      responses:
-#        "200":
-#          description: Lista de pokémons
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: "#/components/schemas/Pokemon"
-#
+    get:
+      summary: Listar todos os pokémons
+      description: Retorna lista com todos os pokémons cadastrados
+      tags:
+        - Pokemons
+      responses:
+        "200":
+          description: Lista de pokémons (pode ser vazia)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pokemon"
+              example:
+                - id: 1
+                  tipo: pikachu
+                  treinador: Thiago
+                  nivel: 1
+                - id: 2
+                  tipo: charizard
+                  treinador: Renato
+                  nivel: 1
+
   /pokemons/{id}:
     get:
       summary: Carregar um pokémon específico
