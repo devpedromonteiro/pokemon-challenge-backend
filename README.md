@@ -65,16 +65,16 @@ npm run lint:staged
 
 ### Testes
 
-# Executar todos os testes
+### Executar todos os testes
 npm test
 
-# Executar testes em modo watch
+### Executar testes em modo watch
 npm run test:watch
 
-# Executar testes com cobertura
+### Executar testes com cobertura
 npm run test:cov
 
-# Executar testes no CI
+### Executar testes no CI
 npm run test:ci
 
 ## Docker
