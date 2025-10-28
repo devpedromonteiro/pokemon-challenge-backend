@@ -157,6 +157,40 @@ Cria um novo pokémon.
 }
 ```
 
+#### GET /pokemons/:id
+
+Carrega os dados de um pokémon específico pelo ID.
+
+**Request:** Nenhum corpo, apenas o ID na URL.
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "tipo": "pikachu",
+  "treinador": "Ash",
+  "nivel": 1
+}
+```
+
+**Regras de Validação:**
+- `id` é obrigatório na URL e deve ser um número válido inteiro
+- IDs decimais, letras ou caracteres especiais retornam erro 400
+
+**Response (400 Bad Request) - ID inválido:**
+```json
+{
+  "error": "id must be a valid number"
+}
+```
+
+**Response (404 Not Found) - Pokémon não encontrado:**
+```json
+{
+  "error": "Pokemon not found"
+}
+```
+
 #### PUT /pokemons/:id
 
 Altera o treinador de um pokémon existente. **Apenas a propriedade `treinador` pode ser alterada.**

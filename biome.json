@@ -7,7 +7,14 @@
     },
     "files": {
         "ignoreUnknown": false,
-        "includes": ["**", "!**/dist", "!**/coverage", "!**/node_modules", "!**/*.js"]
+        "includes": [
+            "**",
+            "!**/dist",
+            "!**/coverage",
+            "!**/node_modules",
+            "!**/*.js",
+            "!**/*.json"
+        ]
     },
     "formatter": {
         "enabled": true,
@@ -89,6 +96,28 @@
             "quoteStyle": "double",
             "semicolons": "always",
             "trailingCommas": "all"
+        },
+        "globals": [
+            "jest",
+            "describe",
+            "it",
+            "expect",
+            "beforeAll",
+            "beforeEach",
+            "afterAll",
+            "afterEach"
+        ]
+    },
+    "overrides": [
+        {
+            "includes": ["src/domain/contracts/**/*.ts"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noNamespace": "off"
+                    }
+                }
+            }
         }
-    }
+    ]
 }

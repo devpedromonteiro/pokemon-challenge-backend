@@ -46,7 +46,7 @@ export class PgConnection implements DbTransaction {
             max: 20,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 2000,
-            ssl: env.nodeEnv === "production" ? true : false,
+            ssl: env.nodeEnv === "production",
         });
 
         const client = await this.pool.connect();

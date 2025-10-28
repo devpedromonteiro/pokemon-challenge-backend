@@ -17,6 +17,6 @@ export default {
         user: process.env.DB_USER || "postgres",
         password: process.env.DB_PASSWORD || "postgres",
         database: process.env.DB_NAME || "pokemon_db",
-        ssl: process.env.NODE_ENV === "production" ? true : false,
+        ssl: process.env.NODE_ENV === "production",
     },
 } satisfies Config;

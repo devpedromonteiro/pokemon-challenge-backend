@@ -6,11 +6,7 @@ import {
     RequiredString,
     type Validator,
 } from "@/application/validation";
-import type {
-    CreatePokemonParams,
-    PokemonModel,
-    PokemonRepository,
-} from "@/domain/contracts/repos";
+import type { PokemonModel, PokemonRepository } from "@/domain/contracts/repos";
 
 type HttpRequest = {
     tipo?: string;
