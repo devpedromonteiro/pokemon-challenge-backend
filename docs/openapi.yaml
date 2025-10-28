@@ -62,6 +62,54 @@ paths:
                     example: "tipo must be one of: \"pikachu\", \"charizard\", \"mewtwo\""
 #    get:
 #      summary: Listar pokémons
+#      tags:
+#        - Pokemons
+#      responses:
+#        "200":
+#          description: Lista de pokémons
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: "#/components/schemas/Pokemon"
+#
+  /pokemons/{id}:
+    put:
+      summary: Alterar treinador de um pokémon
+      description: Apenas a propriedade treinador pode ser alterada
+      tags:
+        - Pokemons
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do pokémon
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePokemonInput"
+      responses:
+        "204":
+          description: Atualizado com sucesso (sem corpo)
+        "400":
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "The field treinador is required"
+#    get:
+#      summary: Carregar um pokémon específico
+#      tags:
+#        - Pokemons
 #      responses:
 #        "200":
 #          description: Lista de pokémons
@@ -91,6 +139,8 @@ paths:
 #  /pokemons/{id}:
 #    get:
 #      summary: Carregar um pokémon específico
+#      tags:
+#        - Pokemons
 #      parameters:
 #        - in: path
 #          name: id
@@ -123,6 +173,8 @@ paths:
 #
 #    delete:
 #      summary: Deletar pokémon
+#      tags:
+#        - Pokemons
 #      parameters:
 #        - in: path
 #          name: id
@@ -135,6 +187,8 @@ paths:
 #  /batalhar/{pokemonAId}/{pokemonBId}:
 #    post:
 #      summary: Batalhar dois pokémons
+#      tags:
+#        - Batalhar
 #      description: >
 #        O vencedor ganha +1 nível, o perdedor perde -1.
 #        Se chegar a 0, é removido do banco.
@@ -189,13 +243,16 @@ components:
         tipo: pikachu
         treinador: Ash
 
-#    UpdatePokemonInput:
-#      type: object
-#      required: [treinador]
-#      properties:
-#        treinador:
-#          type: string
-#
+    UpdatePokemonInput:
+      type: object
+      required: [treinador]
+      properties:
+        treinador:
+          type: string
+          description: Nome do treinador (não pode ser vazio)
+      example:
+        treinador: Thiago
+
 #    BattleResult:
 #      type: object
 #      required: [vencedor, perdedor]
