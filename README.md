@@ -251,6 +251,39 @@ Sem corpo na resposta. Status 204 indica sucesso.
 }
 ```
 
+#### DELETE /pokemons/:id
+
+Deleta um pokémon existente do banco de dados.
+
+**Request:** Nenhum corpo, apenas o ID na URL.
+
+**Response (204 No Content):**
+Sem corpo na resposta. Status 204 indica sucesso.
+
+**Regras de Validação:**
+- `id` é obrigatório na URL e deve ser um número válido inteiro
+- Pokémon deve existir no banco de dados
+
+**Response (400 Bad Request) - ID inválido:**
+```json
+{
+  "error": "id must be a valid number"
+}
+```
+
+**Response (404 Not Found) - Pokémon não encontrado:**
+```json
+{
+  "error": "Pokemon not found"
+}
+```
+
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases** do Rodrigo Manguinho:
+- **Use Case (`domain/use-cases/delete-pokemon.ts`)**: Contém a regra de negócio (verificar se pokémon existe antes de deletar)
+- **Controller (`application/controllers/delete-pokemon.ts`)**: Orquestra a execução do use case
+- **Factory**: Injeta o use case no controller
+
 ## Estrutura do Projeto
 
 ```
