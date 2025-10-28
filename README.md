@@ -251,6 +251,19 @@ Sem corpo na resposta. Status 204 indica sucesso.
 }
 ```
 
+**Response (404 Not Found) - Pokémon não encontrado:**
+```json
+{
+  "error": "Pokemon not found"
+}
+```
+
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/update-pokemon-treinador.ts`)**: Contém a regra de negócio (verificar se pokémon existe antes de atualizar)
+- **Controller (`application/controllers/update-pokemon-treinador.ts`)**: Orquestra a execução do use case
+- **Factory**: Injeta o use case no controller
+
 #### DELETE /pokemons/:id
 
 Deleta um pokémon existente do banco de dados.
@@ -279,7 +292,7 @@ Sem corpo na resposta. Status 204 indica sucesso.
 ```
 
 **⚠️ Arquitetura:**
-Este endpoint segue o padrão de **Use Cases** do Rodrigo Manguinho:
+Este endpoint segue o padrão de **Use Cases**:
 - **Use Case (`domain/use-cases/delete-pokemon.ts`)**: Contém a regra de negócio (verificar se pokémon existe antes de deletar)
 - **Controller (`application/controllers/delete-pokemon.ts`)**: Orquestra a execução do use case
 - **Factory**: Injeta o use case no controller
@@ -348,7 +361,7 @@ npm run test:cov
 
 - **Node.js 22 LTS** (CommonJS em produção)
 - **TypeScript** em desenvolvimento via `tsx`
-- **Clean Architecture** + **TDD** (estilo Rodrigo Manguinho)
+- **Clean Architecture** + **TDD**
 
 ## Variáveis de Ambiente
 

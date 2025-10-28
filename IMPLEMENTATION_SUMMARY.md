@@ -2,7 +2,7 @@
 
 ## ✅ Implementation Completed
 
-A camada de banco de dados foi implementada com sucesso seguindo os princípios de Clean Architecture do Rodrigo Manguinho.
+A camada de banco de dados foi implementada com sucesso seguindo os princípios de Clean Architecture.
 
 ---
 
@@ -407,7 +407,6 @@ await transactionalController.handle(request);
 
 - [Drizzle ORM Docs](https://orm.drizzle.team/)
 - [Clean Architecture (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Advanced Node (Rodrigo Manguinho)](https://www.udemy.com/course/nodejs-avancado/)
 
 ---
 
@@ -533,7 +532,6 @@ await transactionalController.handle(request);
 ## 🙏 Credits
 
 **Architecture Based On:**
-- Rodrigo Manguinho's Advanced Node Course
 - Uncle Bob's Clean Architecture
 - Martin Fowler's Patterns of Enterprise Application Architecture
 

@@ -1,18 +1,22 @@
-import { type MockProxy, mock } from "jest-mock-extended";
+import { Controller } from "@/application/controllers";
 import { UpdatePokemonTreinadorController } from "@/application/controllers/pokemon";
-import type { PokemonRepository } from "@/domain/contracts/repos";
+import { noContent, notFound } from "@/application/helpers";
 
 describe("UpdatePokemonTreinadorController", () => {
     let sut: UpdatePokemonTreinadorController;
-    let pokemonRepository: MockProxy<PokemonRepository>;
+    let updatePokemonTreinador: jest.Mock;
 
     beforeAll(() => {
-        pokemonRepository = mock();
-        pokemonRepository.updateTreinador.mockResolvedValue(undefined);
+        updatePokemonTreinador = jest.fn();
+        updatePokemonTreinador.mockResolvedValue(undefined);
     });
 
     beforeEach(() => {
-        sut = new UpdatePokemonTreinadorController(pokemonRepository);
+        sut = new UpdatePokemonTreinadorController(updatePokemonTreinador);
+    });
+
+    it("should extend Controller", () => {
+        expect(sut).toBeInstanceOf(Controller);
     });
 
     describe("buildValidators", () => {
@@ -54,13 +58,13 @@ describe("UpdatePokemonTreinadorController", () => {
     });
 
     describe("perform", () => {
-        it("should call repository with correct params", async () => {
+        it("should call UpdatePokemonTreinador use case with correct params", async () => {
             const httpRequest = { id: "1", treinador: "Gary" };
 
             await sut.handle(httpRequest);
 
-            expect(pokemonRepository.updateTreinador).toHaveBeenCalledWith(1, "Gary");
-            expect(pokemonRepository.updateTreinador).toHaveBeenCalledTimes(1);
+            expect(updatePokemonTreinador).toHaveBeenCalledWith({ id: 1, treinador: "Gary" });
+            expect(updatePokemonTreinador).toHaveBeenCalledTimes(1);
         });
 
         it("should return 204 No Content on success", async () => {
@@ -68,20 +72,30 @@ describe("UpdatePokemonTreinadorController", () => {
 
             const httpResponse = await sut.handle(httpRequest);
 
-            expect(httpResponse.statusCode).toBe(204);
-            expect(httpResponse.data).toBeNull();
+            expect(httpResponse).toEqual(noContent());
         });
 
-        it("should update treinador with numeric string id", async () => {
+        it("should call use case with numeric string id", async () => {
             const httpRequest = { id: "42", treinador: "Misty" };
 
             await sut.handle(httpRequest);
 
-            expect(pokemonRepository.updateTreinador).toHaveBeenCalledWith(42, "Misty");
+            expect(updatePokemonTreinador).toHaveBeenCalledWith({ id: 42, treinador: "Misty" });
         });
 
-        it("should return 500 if repository throws", async () => {
-            pokemonRepository.updateTreinador.mockRejectedValueOnce(new Error("Database error"));
+        it("should return 404 if Pokemon not found", async () => {
+            updatePokemonTreinador.mockRejectedValueOnce(new Error("Pokemon not found"));
+
+            const httpRequest = { id: "999", treinador: "Ash" };
+
+            const httpResponse = await sut.handle(httpRequest);
+
+            expect(httpResponse).toEqual(notFound(new Error("Pokemon not found")));
+        });
+
+        it("should return 500 if use case throws other error", async () => {
+            const genericError = new Error("Database error");
+            updatePokemonTreinador.mockRejectedValueOnce(genericError);
 
             const httpRequest = { id: "1", treinador: "Ash" };
 
@@ -89,6 +103,19 @@ describe("UpdatePokemonTreinadorController", () => {
 
             expect(httpResponse.statusCode).toBe(500);
             expect(httpResponse.data).toBeInstanceOf(Error);
+            expect(httpResponse.data.message).toBe("Server failed. Try again soon");
+        });
+
+        it("should handle large id numbers", async () => {
+            const largeId = "999999999";
+            const httpRequest = { id: largeId, treinador: "Trainer" };
+
+            await sut.handle(httpRequest);
+
+            expect(updatePokemonTreinador).toHaveBeenCalledWith({
+                id: Number(largeId),
+                treinador: "Trainer",
+            });
         });
     });
 });
