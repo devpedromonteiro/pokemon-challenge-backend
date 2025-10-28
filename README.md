@@ -11,6 +11,14 @@ API REST desenvolvida com Node.js 22 LTS, TypeScript e Express.
 - **Jest**: 30.2.0 (testes)
 - **Biome**: 2.3.0 (linter + formatter)
 
+## 📚 Documentação Adicional
+
+Para informações detalhadas sobre a arquitetura e desenvolvimento:
+
+- **[QUICK_START.md](./QUICK_START.md)** - Guia de início rápido para configuração e uso básico
+- **[DATABASE.md](./DATABASE.md)** - Documentação completa da camada de banco de dados (Drizzle ORM, transações, repositórios)
+- **[ADDING_NEW_FEATURE.md](./ADDING_NEW_FEATURE.md)** - Guia passo a passo para adicionar novas funcionalidades seguindo Clean Architecture
+
 ## Requisitos
 
 - **Node.js** 22 LTS
