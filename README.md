@@ -191,6 +191,12 @@ Lista todos os pokémons cadastrados no sistema.
 - Não há paginação implementada (retorna todos os registros)
 - A ordem dos resultados é determinada pelo banco de dados
 
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/list-pokemons.ts`)**: Encapsula a lógica de listar todos os pokémons
+- **Controller (`application/controllers/list-pokemons.ts`)**: Orquestra a execução do use case
+- **Factory**: Injeta o use case no controller
+
 #### GET /pokemons/:id
 
 Carrega os dados de um pokémon específico pelo ID.

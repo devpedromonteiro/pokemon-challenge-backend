@@ -1,11 +1,11 @@
-import { type MockProxy, mock } from "jest-mock-extended";
+import { Controller } from "@/application/controllers";
 import { ListPokemonsController } from "@/application/controllers/pokemon";
 import { ok } from "@/application/helpers";
-import type { PokemonModel, PokemonRepository } from "@/domain/contracts/repos";
+import type { PokemonModel } from "@/domain/contracts/repos";
 
 describe("ListPokemonsController", () => {
     let sut: ListPokemonsController;
-    let pokemonRepository: MockProxy<PokemonRepository>;
+    let listPokemons: jest.Mock;
     let fakePokemons: PokemonModel[];
 
     beforeAll(() => {
@@ -29,12 +29,16 @@ describe("ListPokemonsController", () => {
                 nivel: 50,
             },
         ];
-        pokemonRepository = mock();
-        pokemonRepository.listAll.mockResolvedValue(fakePokemons);
+        listPokemons = jest.fn();
+        listPokemons.mockResolvedValue(fakePokemons);
     });
 
     beforeEach(() => {
-        sut = new ListPokemonsController(pokemonRepository);
+        sut = new ListPokemonsController(listPokemons);
+    });
+
+    it("should extend Controller", () => {
+        expect(sut).toBeInstanceOf(Controller);
     });
 
     describe("buildValidators", () => {
@@ -47,11 +51,11 @@ describe("ListPokemonsController", () => {
     });
 
     describe("perform", () => {
-        it("should call repository listAll", async () => {
+        it("should call ListPokemons use case", async () => {
             await sut.handle({});
 
-            expect(pokemonRepository.listAll).toHaveBeenCalledWith();
-            expect(pokemonRepository.listAll).toHaveBeenCalledTimes(1);
+            expect(listPokemons).toHaveBeenCalledWith();
+            expect(listPokemons).toHaveBeenCalledTimes(1);
         });
 
         it("should return 200 with array of Pokemons", async () => {
@@ -85,7 +89,7 @@ describe("ListPokemonsController", () => {
         });
 
         it("should return empty array when no Pokemons exist", async () => {
-            pokemonRepository.listAll.mockResolvedValueOnce([]);
+            listPokemons.mockResolvedValueOnce([]);
 
             const httpResponse = await sut.handle({});
 
@@ -96,7 +100,7 @@ describe("ListPokemonsController", () => {
 
         it("should return array with single Pokemon", async () => {
             const singlePokemon = [fakePokemons[0]];
-            pokemonRepository.listAll.mockResolvedValueOnce(singlePokemon);
+            listPokemons.mockResolvedValueOnce(singlePokemon);
 
             const httpResponse = await sut.handle({});
 
@@ -104,8 +108,8 @@ describe("ListPokemonsController", () => {
             expect(httpResponse.data).toEqual(singlePokemon);
         });
 
-        it("should return 500 if repository throws", async () => {
-            pokemonRepository.listAll.mockRejectedValueOnce(new Error("Database error"));
+        it("should return 500 if use case throws", async () => {
+            listPokemons.mockRejectedValueOnce(new Error("Database error"));
 
             const httpResponse = await sut.handle({});
 
@@ -129,7 +133,7 @@ describe("ListPokemonsController", () => {
                 treinador: `Trainer ${i + 1}`,
                 nivel: i + 1,
             }));
-            pokemonRepository.listAll.mockResolvedValueOnce(largeList);
+            listPokemons.mockResolvedValueOnce(largeList);
 
             const httpResponse = await sut.handle({});
 
