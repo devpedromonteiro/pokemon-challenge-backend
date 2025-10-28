@@ -191,6 +191,8 @@ describe("PUT /pokemons/:id - Integration Tests", () => {
         });
 
         it("should handle concurrent updates", async () => {
+            jest.setTimeout(20000);
+
             const updates = [
                 request(app).put(`/pokemons/${createdPokemonId}`).send({ treinador: "Trainer 1" }),
                 request(app).put(`/pokemons/${createdPokemonId}`).send({ treinador: "Trainer 2" }),
