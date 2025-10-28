@@ -43,3 +43,23 @@ export class RequiredBuffer extends Required {
         }
     }
 }
+
+export class RequiredNumber extends Required {
+    constructor(
+        override readonly value: number,
+        override readonly fieldName?: string,
+    ) {
+        super(value, fieldName);
+    }
+
+    override validate(): Error | undefined {
+        const baseError = super.validate();
+        if (baseError !== undefined) {
+            return baseError;
+        }
+
+        if (Number.isNaN(this.value)) {
+            return new RequiredFieldError(`${this.fieldName} must be a valid number`);
+        }
+    }
+}
