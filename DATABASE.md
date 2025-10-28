@@ -1,43 +1,43 @@
-# Database Layer Documentation
+# Documentação da Camada de Banco de Dados
 
-## Workflow
+## Fluxo de Trabalho
 
 Fluxo básico para gerenciar o banco de dados com **Drizzle ORM**:
 
 ```bash
 # Criar nova migração
-npm run db:generate -- --name=<migration-name>
+npm run db:generate -- --name=<nome-da-migracao>
 
 # Aplicar migrações no banco local
 npm run db:migrate
 
 # Inspecionar resultado no Drizzle Studio
 npm run db:studio
+```
 
+## Visão Geral
 
-## Overview
+Este projeto usa **Drizzle ORM** com **PostgreSQL** seguindo os princípios de **Clean Architecture**.
 
-This project uses **Drizzle ORM** with **PostgreSQL** following **Clean Architecture** principles.
-
-## Architecture Structure
+## Estrutura da Arquitetura
 
 ```
 src/
 ├── domain/
 │   └── contracts/
-│       └── repos/                 # Repository contracts (domain layer)
+│       └── repos/                 # Contratos de repositórios (camada de domínio)
 │           ├── pokemon-repository.ts
 │           └── index.ts
 ├── application/
 │   ├── contracts/
-│   │   ├── db-transaction.ts     # Transaction interface
+│   │   ├── db-transaction.ts     # Interface de transação
 │   │   └── index.ts
 │   └── decorators/
-│       ├── db-transaction-controller.ts  # Transaction decorator
+│       ├── db-transaction-controller.ts  # Decorator de transação
 │       └── index.ts
 ├── infra/
 │   └── repos/
-│       └── postgres/              # PostgreSQL implementation
+│       └── postgres/              # Implementação PostgreSQL
 │           ├── config/
 │           │   └── drizzle.config.ts
 │           ├── helpers/
@@ -48,26 +48,26 @@ src/
 │           │   ├── pokemon.ts
 │           │   └── index.ts
 │           ├── pokemon-repository.ts
-│           ├── repository.ts      # Base repository class
+│           ├── repository.ts      # Classe base de repositório
 │           └── index.ts
 └── main/
     ├── config/
-    │   └── env.ts                 # Environment variables
+    │   └── env.ts                 # Variáveis de ambiente
     └── factories/
         └── infra/
             └── repos/
                 └── postgres/
                     ├── helpers/
-                    │   └── connection.ts  # Connection factory
+                    │   └── connection.ts  # Factory de conexão
                     ├── pokemon-repository.ts
                     └── index.ts
 ```
 
-## Key Components
+## Componentes Principais
 
 ### 1. **PgConnection (Singleton)**
 
-Manages the database connection and transactions.
+Gerencia a conexão com o banco de dados e transações.
 
 ```typescript
 import { makePgConnection } from '@/main/factories/infra/repos/postgres';
@@ -76,18 +76,18 @@ const connection = makePgConnection();
 await connection.connect();
 ```
 
-**Methods:**
-- `connect()` - Establishes database connection
-- `disconnect()` - Closes database connection
-- `openTransaction()` - Opens a new transaction
-- `closeTransaction()` - Closes current transaction
-- `commit()` - Commits current transaction
-- `rollback()` - Rolls back current transaction
-- `getDb()` - Returns Drizzle instance (transaction if active)
+**Métodos:**
+- `connect()` - Estabelece conexão com o banco de dados
+- `disconnect()` - Fecha a conexão com o banco de dados
+- `openTransaction()` - Abre uma nova transação
+- `closeTransaction()` - Fecha a transação atual
+- `commit()` - Confirma a transação atual
+- `rollback()` - Reverte a transação atual
+- `getDb()` - Retorna a instância do Drizzle (transação se ativa)
 
-### 2. **PgRepository (Base Class)**
+### 2. **PgRepository (Classe Base)**
 
-Abstract base class for all repositories. Provides access to the Drizzle database instance.
+Classe base abstrata para todos os repositórios. Fornece acesso à instância do banco de dados Drizzle.
 
 ```typescript
 export abstract class PgRepository {
@@ -99,7 +99,7 @@ export abstract class PgRepository {
 }
 ```
 
-### 3. **Repository Implementation Example**
+### 3. **Exemplo de Implementação de Repositório**
 
 ```typescript
 export class PgPokemonRepository extends PgRepository implements PokemonRepository {
@@ -124,7 +124,7 @@ export class PgPokemonRepository extends PgRepository implements PokemonReposito
 
 ### 4. **DbTransactionController (Decorator)**
 
-Automatically wraps controllers with transaction support.
+Envolve automaticamente controllers com suporte a transações.
 
 ```typescript
 const controller = new SomeController();
@@ -134,18 +134,18 @@ const transactionalController = new DbTransactionController(
 );
 ```
 
-**Behavior:**
-- Opens transaction before controller execution
-- Commits on success
-- Rolls back on error
-- Always closes transaction in finally block
+**Comportamento:**
+- Abre transação antes da execução do controller
+- Confirma em caso de sucesso
+- Reverte em caso de erro
+- Sempre fecha a transação no bloco finally
 
-## Environment Variables
+## Variáveis de Ambiente
 
-Create a `.env` file with the following variables:
+Crie um arquivo `.env` com as seguintes variáveis:
 
 ```env
-# Database Configuration
+# Configuração do Banco de Dados
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
@@ -153,81 +153,81 @@ DB_PASSWORD=postgres
 DB_NAME=pokemon_db
 ```
 
-## Drizzle Commands
+## Comandos do Drizzle
 
-### Generate Migrations
+### Gerar Migrações
 ```bash
 npm run db:generate
 ```
 
-### Run Migrations
+### Executar Migrações
 ```bash
 npm run db:migrate
 ```
 
-### Push Schema to Database
+### Enviar Schema para o Banco de Dados
 ```bash
 npm run db:push
 ```
 
-### Open Drizzle Studio
+### Abrir Drizzle Studio
 ```bash
 npm run db:studio
 ```
 
-## Usage Examples
+## Exemplos de Uso
 
-## Database Schema
+## Schema do Banco de Dados
 
-### Pokemon Table
+### Tabela Pokemon
 
 ```
 pokemons
-├── id (serial, PK)              - Auto-increment primary key
-├── tipo (varchar(50))           - Pokemon type: "pikachu" | "charizard" | "mewtwo"
-├── treinador (varchar(255))     - Trainer name
-└── nivel (integer, default 1)   - Pokemon level (>= 0)
+├── id (serial, PK)              - Chave primária auto-incremento
+├── tipo (varchar(50))           - Tipo do pokémon: "pikachu" | "charizard" | "mewtwo"
+├── treinador (varchar(255))     - Nome do treinador
+└── nivel (integer, default 1)   - Nível do pokémon (>= 0)
 
-Constraints:
+Restrições:
 - tipo_valido: CHECK (tipo IN ('pikachu', 'charizard', 'mewtwo'))
 - nivel_nao_negativo: CHECK (nivel >= 0)
 ```
 
-**Rules:**
-- `nivel` always starts at 1 when a Pokemon is created
-- `nivel` can never be negative (enforced by CHECK constraint)
-- `tipo` can only be one of the three allowed values (enforced by CHECK constraint)
+**Regras:**
+- `nivel` sempre começa em 1 quando um Pokémon é criado
+- `nivel` nunca pode ser negativo (garantido pela restrição CHECK)
+- `tipo` só pode ser um dos três valores permitidos (garantido pela restrição CHECK)
 
-### Basic Repository Usage
+### Uso Básico do Repositório
 
 ```typescript
 import { makePgPokemonRepository } from '@/main/factories/infra/repos/postgres';
 
 const repository = makePgPokemonRepository();
 
-// Create a Pokemon (nivel starts at 1 automatically)
+// Criar um Pokémon (nivel começa em 1 automaticamente)
 const pokemon = await repository.create({
   tipo: "pikachu",
   treinador: "Ash"
 });
 
-// Load a Pokemon by ID
+// Carregar um Pokémon por ID
 const found = await repository.loadById(1);
 
-// List all Pokemon
+// Listar todos os Pokémons
 const all = await repository.listAll();
 
-// Update treinador
+// Atualizar treinador
 await repository.updateTreinador(1, "Gary");
 
-// Update nivel
+// Atualizar nível
 await repository.updateNivel(1, 10);
 
-// Delete Pokemon
+// Deletar Pokémon
 await repository.deleteById(1);
 ```
 
-### Using Transactions Manually
+### Usando Transações Manualmente
 
 ```typescript
 import { makePgConnection, makePgPokemonRepository } from '@/main/factories/infra/repos/postgres';
@@ -238,7 +238,7 @@ const repository = makePgPokemonRepository();
 try {
   await connection.openTransaction();
   
-  // Your database operations here
+  // Suas operações de banco de dados aqui
   await repository.create({ tipo: "pikachu", treinador: "Ash" });
   await repository.create({ tipo: "charizard", treinador: "Red" });
   
@@ -251,58 +251,58 @@ try {
 }
 ```
 
-### Using Transaction Decorator
+### Usando o Decorator de Transação
 
 ```typescript
 import { DbTransactionController } from '@/application/decorators';
 import { makePgConnection } from '@/main/factories/infra/repos/postgres';
 
-// Wrap your controller
+// Envolva seu controller
 const controller = new SomeController();
 const transactionalController = new DbTransactionController(
   controller,
   makePgConnection()
 );
 
-// All operations will run in a transaction
+// Todas as operações serão executadas em uma transação
 await transactionalController.handle(request);
 ```
 
-## Design Principles
+## Princípios de Design
 
-### SOLID Principles
+### Princípios SOLID
 
-1. **Single Responsibility**: Each class has one reason to change
-2. **Open/Closed**: Open for extension, closed for modification
-3. **Liskov Substitution**: Repositories can be substituted by their interfaces
-4. **Interface Segregation**: Small, focused interfaces
-5. **Dependency Inversion**: Domain depends on abstractions, not implementations
+1. **Responsabilidade Única**: Cada classe tem um único motivo para mudar
+2. **Aberto/Fechado**: Aberto para extensão, fechado para modificação
+3. **Substituição de Liskov**: Repositórios podem ser substituídos por suas interfaces
+4. **Segregação de Interface**: Interfaces pequenas e focadas
+5. **Inversão de Dependência**: Domínio depende de abstrações, não de implementações
 
-### Clean Architecture Layers
+### Camadas da Clean Architecture
 
-1. **Domain**: Business rules and contracts (interfaces)
-2. **Application**: Use cases and application-specific logic
-3. **Infrastructure**: External concerns (database, APIs)
-4. **Main**: Composition root (factories, server initialization)
+1. **Domain**: Regras de negócio e contratos (interfaces)
+2. **Application**: Casos de uso e lógica específica da aplicação
+3. **Infrastructure**: Preocupações externas (banco de dados, APIs)
+4. **Main**: Raiz de composição (factories, inicialização do servidor)
 
-### Benefits
+### Benefícios
 
-- ✅ **Testability**: Easy to mock repositories using interfaces
-- ✅ **Flexibility**: Can switch ORM without changing domain
-- ✅ **Maintainability**: Clear separation of concerns
-- ✅ **Type Safety**: Full TypeScript type inference
-- ✅ **Transaction Support**: Built-in transaction management
+- ✅ **Testabilidade**: Fácil fazer mock de repositórios usando interfaces
+- ✅ **Flexibilidade**: Pode trocar de ORM sem mudar o domínio
+- ✅ **Manutenibilidade**: Separação clara de responsabilidades
+- ✅ **Segurança de Tipos**: Inferência completa de tipos TypeScript
+- ✅ **Suporte a Transações**: Gerenciamento de transações integrado
 
-## Error Handling
+## Tratamento de Erros
 
-Custom errors are provided for common scenarios:
+Erros personalizados são fornecidos para cenários comuns:
 
-- `ConnectionNotFoundError`: Thrown when trying to use DB before connecting
-- `TransactionNotFoundError`: Thrown when using transaction methods without an active transaction
+- `ConnectionNotFoundError`: Lançado ao tentar usar o DB antes de conectar
+- `TransactionNotFoundError`: Lançado ao usar métodos de transação sem uma transação ativa
 
-## Server Initialization
+## Inicialização do Servidor
 
-The database connection is established before the server starts:
+A conexão com o banco de dados é estabelecida antes do servidor iniciar:
 
 ```typescript
 makePgConnection()
@@ -319,33 +319,33 @@ makePgConnection()
   });
 ```
 
-## Adding New Repositories
+## Adicionando Novos Repositórios
 
-1. **Create domain contract** in `src/domain/contracts/repos/`
-2. **Create implementation** in `src/infra/repos/postgres/`
-3. **Create factory** in `src/main/factories/infra/repos/postgres/`
-4. **Extend PgRepository** base class
-5. **Implement contract interfaces**
+1. **Criar contrato no domínio** em `src/domain/contracts/repos/`
+2. **Criar implementação** em `src/infra/repos/postgres/`
+3. **Criar factory** em `src/main/factories/infra/repos/postgres/`
+4. **Estender a classe base** PgRepository
+5. **Implementar as interfaces** do contrato
 
-Example:
+Exemplo:
 
 ```typescript
-// 1. Domain contract
+// 1. Contrato do domínio
 export interface UserRepository {
   loadById: (id: number) => Promise<UserModel | null>;
   create: (data: CreateUserParams) => Promise<UserModel>;
 }
 
-// 2. Implementation
+// 2. Implementação
 export class PgUserRepository extends PgRepository implements UserRepository {
   async loadById(id: number): Promise<UserModel | null> {
     const db = this.getDb();
-    // implementation
+    // implementação
   }
   
   async create(data: CreateUserParams): Promise<UserModel> {
     const db = this.getDb();
-    // implementation
+    // implementação
   }
 }
 
@@ -355,9 +355,9 @@ export const makePgUserRepository = (): PgUserRepository => {
 };
 ```
 
-## Testing
+## Testes
 
-Repositories can be easily mocked for testing:
+Repositórios podem ser facilmente mockados para testes:
 
 ```typescript
 const mockRepository: PokemonRepository = {
@@ -374,17 +374,16 @@ const mockRepository: PokemonRepository = {
   deleteById: jest.fn()
 };
 
-// Use mock in your tests
+// Use o mock nos seus testes
 const result = await mockRepository.loadById(1);
 ```
 
-## Best Practices
+## Boas Práticas
 
-1. ✅ Always use factories to create repository instances
-2. ✅ Keep domain layer free of infrastructure dependencies
-3. ✅ Use transactions for operations that modify multiple records
-4. ✅ Handle errors appropriately (try-catch with rollback)
-5. ✅ Close connections gracefully on application shutdown
-6. ✅ Use TypeDoc comments for better IDE support
-7. ✅ Follow naming conventions (Pg prefix for PostgreSQL implementations)
-
+1. ✅ Sempre use factories para criar instâncias de repositórios
+2. ✅ Mantenha a camada de domínio livre de dependências de infraestrutura
+3. ✅ Use transações para operações que modificam múltiplos registros
+4. ✅ Trate erros apropriadamente (try-catch com rollback)
+5. ✅ Feche conexões graciosamente ao desligar a aplicação
+6. ✅ Use comentários TypeDoc para melhor suporte da IDE
+7. ✅ Siga convenções de nomenclatura (prefixo Pg para implementações PostgreSQL)
