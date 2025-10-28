@@ -1,7 +1,7 @@
 import { Controller } from "@/application/controllers";
-import { type HttpResponse, noContent } from "@/application/helpers";
+import { type HttpResponse, noContent, notFound } from "@/application/helpers";
 import { RequiredString, type Validator } from "@/application/validation";
-import type { PokemonRepository } from "@/domain/contracts/repos";
+import type { UpdatePokemonTreinador } from "@/domain/use-cases";
 
 type HttpRequest = {
     id?: string;
@@ -14,7 +14,7 @@ type Model = Error | null;
  * Controller for updating a Pokemon's treinador
  */
 export class UpdatePokemonTreinadorController extends Controller {
-    constructor(private readonly pokemonRepository: PokemonRepository) {
+    constructor(private readonly updatePokemonTreinador: UpdatePokemonTreinador) {
         super();
     }
 
@@ -39,8 +39,14 @@ export class UpdatePokemonTreinadorController extends Controller {
         const id = Number(httpRequest.id);
         const { treinador } = httpRequest;
 
-        await this.pokemonRepository.updateTreinador(id, treinador as string);
-
-        return noContent();
+        try {
+            await this.updatePokemonTreinador({ id, treinador: treinador as string });
+            return noContent();
+        } catch (error) {
+            if (error instanceof Error && error.message === "Pokemon not found") {
+                return notFound(error);
+            }
+            throw error;
+        }
     }
 }

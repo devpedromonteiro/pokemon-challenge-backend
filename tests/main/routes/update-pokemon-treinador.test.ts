@@ -135,14 +135,17 @@ describe("PUT /pokemons/:id - Integration Tests", () => {
     });
 
     describe("Edge Cases", () => {
-        it("should handle non-existent pokemon id gracefully", async () => {
+        it("should return 404 for non-existent pokemon id", async () => {
             const nonExistentId = 999999;
-            await request(app)
+            const response = await request(app)
                 .put(`/pokemons/${nonExistentId}`)
                 .send({
                     treinador: "New Trainer",
                 })
-                .expect(204); // API returns 204 even if not found (no verification)
+                .expect(404);
+
+            expect(response.body).toHaveProperty("error");
+            expect(response.body.error).toBe("Pokemon not found");
         });
 
         it("should return 400 if Content-Type is not application/json", async () => {

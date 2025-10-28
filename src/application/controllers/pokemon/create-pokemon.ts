@@ -6,7 +6,8 @@ import {
     RequiredString,
     type Validator,
 } from "@/application/validation";
-import type { PokemonModel, PokemonRepository } from "@/domain/contracts/repos";
+import type { PokemonModel } from "@/domain/contracts/repos";
+import type { CreatePokemon } from "@/domain/use-cases";
 
 type HttpRequest = {
     tipo?: string;
@@ -20,7 +21,7 @@ type Model = Error | PokemonModel;
  * Controller for creating a new Pokemon
  */
 export class CreatePokemonController extends Controller {
-    constructor(private readonly pokemonRepository: PokemonRepository) {
+    constructor(private readonly createPokemon: CreatePokemon) {
         super();
     }
 
@@ -48,7 +49,7 @@ export class CreatePokemonController extends Controller {
     async perform(httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
         const { tipo, treinador } = httpRequest;
 
-        const pokemon = await this.pokemonRepository.create({
+        const pokemon = await this.createPokemon({
             tipo: tipo as "pikachu" | "charizard" | "mewtwo",
             treinador: treinador as string,
         });

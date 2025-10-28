@@ -191,6 +191,12 @@ Lista todos os pokémons cadastrados no sistema.
 - Não há paginação implementada (retorna todos os registros)
 - A ordem dos resultados é determinada pelo banco de dados
 
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/list-pokemons.ts`)**: Encapsula a lógica de listar todos os pokémons
+- **Controller (`application/controllers/list-pokemons.ts`)**: Orquestra a execução do use case
+- **Factory**: Injeta o use case no controller
+
 #### GET /pokemons/:id
 
 Carrega os dados de um pokémon específico pelo ID.
@@ -225,6 +231,12 @@ Carrega os dados de um pokémon específico pelo ID.
 }
 ```
 
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/load-pokemon-by-id.ts`)**: Encapsula a lógica de buscar pokémon por ID
+- **Controller (`application/controllers/load-pokemon-by-id.ts`)**: Orquestra a execução do use case e trata o caso de pokémon não encontrado (404)
+- **Factory**: Injeta o use case no controller
+
 #### PUT /pokemons/:id
 
 Altera o treinador de um pokémon existente. **Apenas a propriedade `treinador` pode ser alterada.**
@@ -250,6 +262,19 @@ Sem corpo na resposta. Status 204 indica sucesso.
   "error": "The field treinador is required"
 }
 ```
+
+**Response (404 Not Found) - Pokémon não encontrado:**
+```json
+{
+  "error": "Pokemon not found"
+}
+```
+
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/update-pokemon-treinador.ts`)**: Contém a regra de negócio (verificar se pokémon existe antes de atualizar)
+- **Controller (`application/controllers/update-pokemon-treinador.ts`)**: Orquestra a execução do use case
+- **Factory**: Injeta o use case no controller
 
 #### DELETE /pokemons/:id
 
@@ -279,10 +304,71 @@ Sem corpo na resposta. Status 204 indica sucesso.
 ```
 
 **⚠️ Arquitetura:**
-Este endpoint segue o padrão de **Use Cases** do Rodrigo Manguinho:
+Este endpoint segue o padrão de **Use Cases**:
 - **Use Case (`domain/use-cases/delete-pokemon.ts`)**: Contém a regra de negócio (verificar se pokémon existe antes de deletar)
 - **Controller (`application/controllers/delete-pokemon.ts`)**: Orquestra a execução do use case
 - **Factory**: Injeta o use case no controller
+
+#### POST /batalhar/:pokemonAId/:pokemonBId
+
+Realiza uma batalha entre dois pokémons. O vencedor é determinado de forma aleatória, mas ponderada pelo nível de cada pokémon.
+
+**Request:** Nenhum corpo, apenas os IDs dos dois pokémons na URL.
+
+**Response (200 OK):**
+```json
+{
+  "vencedor": {
+    "id": 1,
+    "tipo": "pikachu",
+    "treinador": "Ash",
+    "nivel": 4
+  },
+  "perdedor": {
+    "id": 2,
+    "tipo": "charizard",
+    "treinador": "Red",
+    "nivel": 0
+  }
+}
+```
+
+**Regras da Batalha:**
+- **Probabilidade Ponderada**: A chance de vitória é proporcional ao nível do pokémon
+  - Fórmula: `P(A vencer) = nivelA / (nivelA + nivelB)`
+  - Exemplo: Nível 1 vs Nível 2 → 33% vs 67%
+  - Níveis iguais → 50% vs 50%
+- **Efeitos da Batalha**:
+  - Vencedor: `nivel += 1`
+  - Perdedor: `nivel -= 1`
+  - Se perdedor chegar a nível 0: **é deletado da tabela** (morte)
+- **Transação Atômica**: Todas as atualizações são feitas em uma única transação (ou tudo acontece ou nada acontece)
+
+**Regras de Validação:**
+- Ambos os IDs são obrigatórios e devem ser números válidos inteiros
+- Os pokémons devem existir no banco de dados
+- **Os IDs devem ser diferentes** (pokémon não pode batalhar contra si mesmo)
+
+**Response (400 Bad Request) - IDs iguais:**
+```json
+{
+  "error": "Cannot battle the same pokemon"
+}
+```
+
+**Response (404 Not Found) - Pokémon não encontrado:**
+```json
+{
+  "error": "Pokemon not found"
+}
+```
+
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases** com lógica de domínio pura:
+- **Domain Logic (`domain/battle/pick-winner-weighted.ts`)**: Função pura que decide o vencedor baseado em probabilidade ponderada (facilita testes unitários)
+- **Use Case (`domain/use-cases/battle-pokemon.ts`)**: Orquestra toda a lógica da batalha (carrega pokémons, decide vencedor, atualiza níveis, deleta se necessário)
+- **Controller (`application/controllers/battle/battle-pokemon.ts`)**: Valida entrada e delega para o use case
+- **Factory**: Injeta o use case no controller com suporte a transação via `DbTransactionController`
 
 ## Estrutura do Projeto
 
@@ -348,7 +434,7 @@ npm run test:cov
 
 - **Node.js 22 LTS** (CommonJS em produção)
 - **TypeScript** em desenvolvimento via `tsx`
-- **Clean Architecture** + **TDD** (estilo Rodrigo Manguinho)
+- **Clean Architecture** + **TDD**
 
 ## Variáveis de Ambiente
 

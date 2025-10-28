@@ -1,15 +1,14 @@
-import { type MockProxy, mock } from "jest-mock-extended";
+import { Controller } from "@/application/controllers";
 import { CreatePokemonController } from "@/application/controllers/pokemon";
 import { ValidationError } from "@/application/errors";
-import type { PokemonRepository } from "@/domain/contracts/repos";
 
 describe("CreatePokemonController", () => {
     let sut: CreatePokemonController;
-    let pokemonRepository: MockProxy<PokemonRepository>;
+    let createPokemon: jest.Mock;
 
     beforeAll(() => {
-        pokemonRepository = mock();
-        pokemonRepository.create.mockResolvedValue({
+        createPokemon = jest.fn();
+        createPokemon.mockResolvedValue({
             id: 1,
             tipo: "pikachu",
             treinador: "Ash",
@@ -18,7 +17,11 @@ describe("CreatePokemonController", () => {
     });
 
     beforeEach(() => {
-        sut = new CreatePokemonController(pokemonRepository);
+        sut = new CreatePokemonController(createPokemon);
+    });
+
+    it("should extend Controller", () => {
+        expect(sut).toBeInstanceOf(Controller);
     });
 
     describe("buildValidators", () => {
@@ -71,16 +74,16 @@ describe("CreatePokemonController", () => {
     });
 
     describe("perform", () => {
-        it("should call repository with correct params", async () => {
+        it("should call CreatePokemon use case with correct params", async () => {
             const httpRequest = { tipo: "pikachu", treinador: "Ash" };
 
             await sut.handle(httpRequest);
 
-            expect(pokemonRepository.create).toHaveBeenCalledWith({
+            expect(createPokemon).toHaveBeenCalledWith({
                 tipo: "pikachu",
                 treinador: "Ash",
             });
-            expect(pokemonRepository.create).toHaveBeenCalledTimes(1);
+            expect(createPokemon).toHaveBeenCalledTimes(1);
         });
 
         it("should return 201 with created Pokemon", async () => {
@@ -98,7 +101,7 @@ describe("CreatePokemonController", () => {
         });
 
         it("should work with tipo charizard", async () => {
-            pokemonRepository.create.mockResolvedValueOnce({
+            createPokemon.mockResolvedValueOnce({
                 id: 2,
                 tipo: "charizard",
                 treinador: "Red",
@@ -119,7 +122,7 @@ describe("CreatePokemonController", () => {
         });
 
         it("should work with tipo mewtwo", async () => {
-            pokemonRepository.create.mockResolvedValueOnce({
+            createPokemon.mockResolvedValueOnce({
                 id: 3,
                 tipo: "mewtwo",
                 treinador: "Giovanni",
@@ -139,8 +142,8 @@ describe("CreatePokemonController", () => {
             });
         });
 
-        it("should return 500 if repository throws", async () => {
-            pokemonRepository.create.mockRejectedValueOnce(new Error("Database error"));
+        it("should return 500 if use case throws", async () => {
+            createPokemon.mockRejectedValueOnce(new Error("Database error"));
 
             const httpRequest = { tipo: "pikachu", treinador: "Ash" };
 
