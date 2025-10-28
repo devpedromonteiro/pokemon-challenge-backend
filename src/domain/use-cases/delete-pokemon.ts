@@ -2,9 +2,8 @@ import type { PokemonRepository } from "@/domain/contracts/repos";
 
 type Setup = (pokemonRepository: PokemonRepository) => DeletePokemon;
 type Input = { id: number };
-type Output = void;
 
-export type DeletePokemon = (input: Input) => Promise<Output>;
+export type DeletePokemon = (input: Input) => Promise<void>;
 
 /**
  * Setup function for DeletePokemon use case
