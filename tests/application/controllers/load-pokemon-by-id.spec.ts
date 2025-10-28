@@ -1,11 +1,11 @@
-import { type MockProxy, mock } from "jest-mock-extended";
+import { Controller } from "@/application/controllers";
 import { LoadPokemonByIdController } from "@/application/controllers/pokemon";
-import { ok } from "@/application/helpers";
-import type { PokemonModel, PokemonRepository } from "@/domain/contracts/repos";
+import { notFound, ok } from "@/application/helpers";
+import type { PokemonModel } from "@/domain/contracts/repos";
 
 describe("LoadPokemonByIdController", () => {
     let sut: LoadPokemonByIdController;
-    let pokemonRepository: MockProxy<PokemonRepository>;
+    let loadPokemonById: jest.Mock;
     let fakePokemon: PokemonModel;
 
     beforeAll(() => {
@@ -15,12 +15,16 @@ describe("LoadPokemonByIdController", () => {
             treinador: "Ash",
             nivel: 5,
         };
-        pokemonRepository = mock();
-        pokemonRepository.loadById.mockResolvedValue(fakePokemon);
+        loadPokemonById = jest.fn();
+        loadPokemonById.mockResolvedValue(fakePokemon);
     });
 
     beforeEach(() => {
-        sut = new LoadPokemonByIdController(pokemonRepository);
+        sut = new LoadPokemonByIdController(loadPokemonById);
+    });
+
+    it("should extend Controller", () => {
+        expect(sut).toBeInstanceOf(Controller);
     });
 
     describe("buildValidators", () => {
@@ -55,11 +59,11 @@ describe("LoadPokemonByIdController", () => {
     });
 
     describe("perform", () => {
-        it("should call repository with correct id", async () => {
+        it("should call LoadPokemonById use case with correct id", async () => {
             await sut.handle({ id: "1" });
 
-            expect(pokemonRepository.loadById).toHaveBeenCalledWith(1);
-            expect(pokemonRepository.loadById).toHaveBeenCalledTimes(1);
+            expect(loadPokemonById).toHaveBeenCalledWith({ id: 1 });
+            expect(loadPokemonById).toHaveBeenCalledTimes(1);
         });
 
         it("should return 200 with Pokemon data when found", async () => {
@@ -79,23 +83,21 @@ describe("LoadPokemonByIdController", () => {
         });
 
         it("should return 404 when Pokemon is not found", async () => {
-            pokemonRepository.loadById.mockResolvedValueOnce(null);
+            loadPokemonById.mockResolvedValueOnce(null);
 
             const httpResponse = await sut.handle({ id: "999" });
 
-            expect(httpResponse.statusCode).toBe(404);
-            expect(httpResponse.data).toBeInstanceOf(Error);
-            expect((httpResponse.data as Error).message).toBe("Pokemon not found");
+            expect(httpResponse).toEqual(notFound(new Error("Pokemon not found")));
         });
 
-        it("should work with large id numbers", async () => {
+        it("should call use case with large id numbers", async () => {
             await sut.handle({ id: "999999" });
 
-            expect(pokemonRepository.loadById).toHaveBeenCalledWith(999999);
+            expect(loadPokemonById).toHaveBeenCalledWith({ id: 999999 });
         });
 
-        it("should return 500 if repository throws", async () => {
-            pokemonRepository.loadById.mockRejectedValueOnce(new Error("Database error"));
+        it("should return 500 if use case throws", async () => {
+            loadPokemonById.mockRejectedValueOnce(new Error("Database error"));
 
             const httpResponse = await sut.handle({ id: "1" });
 
@@ -110,7 +112,7 @@ describe("LoadPokemonByIdController", () => {
                 treinador: "Red",
                 nivel: 10,
             };
-            pokemonRepository.loadById.mockResolvedValueOnce(charizardPokemon);
+            loadPokemonById.mockResolvedValueOnce(charizardPokemon);
 
             const httpResponse = await sut.handle({ id: "2" });
 

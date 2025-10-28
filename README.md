@@ -225,6 +225,12 @@ Carrega os dados de um pokémon específico pelo ID.
 }
 ```
 
+**⚠️ Arquitetura:**
+Este endpoint segue o padrão de **Use Cases**:
+- **Use Case (`domain/use-cases/load-pokemon-by-id.ts`)**: Encapsula a lógica de buscar pokémon por ID
+- **Controller (`application/controllers/load-pokemon-by-id.ts`)**: Orquestra a execução do use case e trata o caso de pokémon não encontrado (404)
+- **Factory**: Injeta o use case no controller
+
 #### PUT /pokemons/:id
 
 Altera o treinador de um pokémon existente. **Apenas a propriedade `treinador` pode ser alterada.**
