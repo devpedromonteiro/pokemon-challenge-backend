@@ -203,6 +203,57 @@ paths:
                     type: string
                     example: "Pokemon not found"
 
+  /batalhar/{pokemonAId}/{pokemonBId}:
+    post:
+      summary: Batalha entre dois pokémons
+      description: >
+        Realiza uma batalha entre dois pokémons. O vencedor é decidido aleatoriamente,
+        mas ponderado pelo nível (pokémon com nível maior tem mais chance de ganhar).
+        O vencedor ganha +1 de nível, o perdedor perde -1 de nível.
+        Se o perdedor chegar a nível 0, ele morre e é deletado da tabela.
+      tags:
+        - Batalha
+      parameters:
+        - in: path
+          name: pokemonAId
+          required: true
+          schema:
+            type: integer
+          description: ID do primeiro pokémon
+        - in: path
+          name: pokemonBId
+          required: true
+          schema:
+            type: integer
+          description: ID do segundo pokémon
+      responses:
+        "200":
+          description: Batalha realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BattleResult"
+        "400":
+          description: IDs inválidos ou tentativa de batalhar pokémon contra si mesmo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Cannot battle the same pokemon"
+        "404":
+          description: Um ou ambos os pokémons não foram encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pokemon not found"
+
 #    get:
 #      summary: Carregar um pokémon específico
 #      tags:
@@ -350,12 +401,22 @@ components:
       example:
         treinador: Thiago
 
-#    BattleResult:
-#      type: object
-#      required: [vencedor, perdedor]
-#      properties:
-#        vencedor:
-#          $ref: "#/components/schemas/Pokemon"
-#        perdedor:
-#          $ref: "#/components/schemas/Pokemon"
-
+    BattleResult:
+      type: object
+      required: [vencedor, perdedor]
+      properties:
+        vencedor:
+          $ref: "#/components/schemas/Pokemon"
+        perdedor:
+          $ref: "#/components/schemas/Pokemon"
+      example:
+        vencedor:
+          id: 1
+          tipo: pikachu
+          treinador: Ash
+          nivel: 4
+        perdedor:
+          id: 2
+          tipo: charizard
+          treinador: Red
+          nivel: 0
