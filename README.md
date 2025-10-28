@@ -157,6 +157,40 @@ Cria um novo pokémon.
 }
 ```
 
+#### GET /pokemons
+
+Lista todos os pokémons cadastrados no sistema.
+
+**Request:** Nenhum corpo ou parâmetro necessário.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "tipo": "pikachu",
+    "treinador": "Thiago",
+    "nivel": 1
+  },
+  {
+    "id": 2,
+    "tipo": "charizard",
+    "treinador": "Renato",
+    "nivel": 1
+  }
+]
+```
+
+**Response (200 OK) - Lista vazia:**
+```json
+[]
+```
+
+**Observações:**
+- Retorna array vazio se não houver pokémons cadastrados
+- Não há paginação implementada (retorna todos os registros)
+- A ordem dos resultados é determinada pelo banco de dados
+
 #### GET /pokemons/:id
 
 Carrega os dados de um pokémon específico pelo ID.

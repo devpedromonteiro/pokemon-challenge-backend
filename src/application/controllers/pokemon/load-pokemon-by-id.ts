@@ -1,6 +1,6 @@
 import { Controller } from "@/application/controllers";
 import { ValidationError } from "@/application/errors";
-import { badRequest, type HttpResponse, notFound, ok } from "@/application/helpers";
+import { type HttpResponse, notFound, ok } from "@/application/helpers";
 import type { Validator } from "@/application/validation";
 import { RequiredString } from "@/application/validation";
 import type { PokemonModel, PokemonRepository } from "@/domain/contracts/repos";
